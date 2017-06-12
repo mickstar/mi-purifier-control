@@ -13,13 +13,13 @@ miio.device({
             updateLog(device);
             // every 12 hours, set to high speed for 3 minutes.
             // this is to better allow the sensor to detect air.
+            x ++;
             if (x % (60 * 12) == 0){
                 setSpeed(device, 10);
                 timeout = 1;
             }else{
                 autoAdjust(device);
             }
-            x ++;
         }, 60 * 1000); // every minute
 	}
 }).catch(console.error);
@@ -63,19 +63,19 @@ function autoAdjust(device){
     }
     console.log(`readjusting for ${aqi}`);
     if (aqi <= 11){
-        setSpeed(device, 2);
+        setSpeed(device, 1);
     }
-    else if (aqi <= 20){
+    else if (aqi <= 25){
+        setSpeed(device, 3);
+        timeout = 3;
+    }
+    else if (aqi <= 40){
         setSpeed(device, 6);
-        timeout = 5;
+        timeout = 1;
     }
-    else if (aqi <= 30){
+    else if (aqi > 40){
         setSpeed(device, 10);
-        timeout = 5;
-    }
-    else if (aqi > 30){
-        setSpeed(device, 12);
-        timeout = 5;
+        timeout = 1;
     }
     previous_aqi = aqi;
 }
