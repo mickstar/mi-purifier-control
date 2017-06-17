@@ -63,11 +63,11 @@ function autoAdjust(device){
     }
     console.log(`readjusting for ${aqi}`);
     if (aqi <= 11){
-        setSpeed(device, 1);
+        setSpeed(device, 0);
     }
     else if (aqi <= 25){
         setSpeed(device, 3);
-        timeout = 3;
+        timeout = 1;
     }
     else if (aqi <= 40){
         setSpeed(device, 6);
