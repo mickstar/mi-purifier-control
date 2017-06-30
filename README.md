@@ -1,8 +1,28 @@
 # mi-purifier-control
-This is a simple script designed to replace the auto-mode available on the mi purifier 2. minor edits are required to fit it to your need. 
+> Better auto mode  
+This is a simple utility designed to replace the AUTO mode available on Mi Purifier 2. This utility also logs the air quality and includes charting functionality.  
+  
+# Getting Started  
+Install Nodejs and python  
+  
+## Install Prerequisites  
+```
+npm update
+pip install flask
+```
+  
+## Running  
+First update the purifier.js script with the appropriate IP address.  
 
-# Intructions  
-first run npm update to install dependencies  
-update the script with correct ip address  
-run node purifier.js  
+Then to run the program
+``` 
+node purifier.js
+
+```
+To run the charting utility  
+```
+python app.py  
+```
+Then open localhost:5000 on your browser.  
+
 
