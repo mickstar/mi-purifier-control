@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Mi Air Data</title>
+</head>
+<body>
+    <div id="chartContainer" style="height: 900px; width: 100%;"></div>
+    <style>
+        .nvd3 g.nv-groups path.nv-line {
+              stroke-width: 5px;
+        }
+    </style>
+
+<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+    var COLUMN_LEVEL = 2;
+    var COLUMN_AQI = 3;
+    var COLUMN_TEMP = 4;
+    var COLUMN_HUMIDITY = 5;
+
+    $.ajax({
+        type: "GET",
+        url: "air.csv",
+        dataType: "text",
+        success: function (data) { processData(data); }
+    });
+    function processData(allText) {
+        var allLinesArray = allText.split('\n');
+        if (allLinesArray.length > 0) {
+            var dataPointsAQI = [];
+            var dataPointsHumidity = [];
+            var dataPointsTemp = [];
+
+            for (var i = 1; i < allLinesArray.length-1; i++) {
+    	        var rowData = allLinesArray[i].split(',');
+    	        if(rowData && rowData.length > 1)
+                    if (rowData[0] == "timestamp") {
+                        continue;
+                    }
+    	            dataPointsAQI.push({
+                        x: new Date(parseInt(rowData[0])),
+                        y: parseInt(rowData[COLUMN_AQI]),
+                    });
+                    dataPointsHumidity.push({
+                        x: new Date(parseInt(rowData[0])),
+                        y: parseFloat(rowData[COLUMN_HUMIDITY]),
+                    });
+                    dataPointsTemp.push({
+                        x: new Date(parseInt(rowData[0])),
+                        y: parseFloat(rowData[COLUMN_TEMP]),
+                    });
+                }
+                chart.options.data[0].dataPoints = dataPointsAQI;
+                chart.options.data[1].dataPoints = dataPointsHumidity;
+                chart.options.data[2].dataPoints = dataPointsTemp;
+                chart.render();
+        }
+    }
+
+
+    var chart = new CanvasJS.Chart("chartContainer", {
+        theme: "theme1",
+        animationEnabled: true,
+zoomEnabled: true,
+        title: {
+            text: "Mi Purifier Plot"
+        },
+        data: [
+        {
+            name: "AQI",
+            showInLegend: true,
+            visible: true,
+            type: "line",
+            dataPoints: []
+        },
+        {
+            name: "Humidity",
+            showInLegend: true,
+            visible: false,
+            type: "line",
+            dataPoints: []
+        },
+        {
+            name: "Temperature",
+            showInLegend: true,
+            visible: false,
+            type: "line",
+            dataPoints: []
+        }
+    ],
+    legend: {
+            cursor: "pointer",
+            itemclick: function (e) {
+                //console.log("legend click: " + e.dataPointIndex);
+                //console.log(e);
+                if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                } else {
+                    e.dataSeries.visible = true;
+                }
+
+                e.chart.render();
+            }
+        }
+    });
+
+});
+</script>
+</body>
+
+</html>
